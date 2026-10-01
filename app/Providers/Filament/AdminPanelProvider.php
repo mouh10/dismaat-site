@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('DISMAT — Administration')
+            ->brandLogo(asset('images/logo-dismat.png'))
+            ->brandLogoHeight('2.1rem')
             ->favicon(asset('favicon.ico'))
             ->colors([
                 'primary' => Color::hex('#13294B'),

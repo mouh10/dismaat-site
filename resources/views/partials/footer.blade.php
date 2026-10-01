@@ -1,9 +1,8 @@
 <footer class="bg-brand-800 text-slate-300">
     <div class="container-dismat grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-            <div class="flex items-center gap-2.5">
-                <span class="flex h-10 w-10 items-center justify-center rounded-md bg-white/10 font-display text-lg font-extrabold text-white">D</span>
-                <span class="font-display text-lg font-extrabold text-white">DISMAT</span>
+            <div class="inline-flex items-center rounded-lg bg-white px-4 py-2.5">
+                <img src="{{ asset('images/logo-dismat.png') }}" alt="DISMAT" class="h-6 w-auto">
             </div>
             <p class="mt-4 text-sm leading-relaxed text-slate-400">
                 {{ config('dismat.baseline') }}. Basée à Dakar, DISMAT accompagne les entreprises et administrations sénégalaises dans l'équipement et la modernisation de leurs bureaux.

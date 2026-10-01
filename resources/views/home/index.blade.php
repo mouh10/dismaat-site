@@ -56,13 +56,9 @@
                             <span class="text-sm text-slate-500">Registre du commerce</span>
                             <span class="text-sm font-semibold text-brand-700">{{ config('dismat.rc') }}</span>
                         </div>
-                        <div class="flex justify-between gap-4 border-b border-slate-100 py-3.5">
+                        <div class="flex justify-between gap-4 py-3.5">
                             <span class="text-sm text-slate-500">NINEA</span>
                             <span class="text-sm font-semibold text-brand-700">{{ config('dismat.ninea') }}</span>
-                        </div>
-                        <div class="flex justify-between gap-4 py-3.5">
-                            <span class="text-sm text-slate-500">Banque</span>
-                            <span class="text-sm font-semibold text-brand-700">{{ config('dismat.bank.name') }}</span>
                         </div>
                     </div>
                 </div>

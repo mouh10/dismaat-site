@@ -7,6 +7,8 @@
     <title>@yield('title', config('dismat.name')) — {{ config('dismat.baseline') }}</title>
     <meta name="description" content="@yield('description', 'DISMAT, distributeur de matériel bureautique et informatique à Dakar, Sénégal : ordinateurs, imprimantes, mobilier de bureau, consommables et services associés.')">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

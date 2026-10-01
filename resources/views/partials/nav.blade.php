@@ -11,11 +11,10 @@
 
 <header id="site-header" class="sticky top-0 z-40 border-b border-slate-200 bg-white">
     <div class="container-dismat flex h-[92px] items-center justify-between">
-        <a href="{{ route('home') }}" class="flex items-center gap-3">
-            <span class="flex h-[42px] w-[42px] items-center justify-center rounded-md bg-brand-700 font-display text-lg font-extrabold text-white">D</span>
-            <span>
-                <span class="block font-display text-lg font-extrabold leading-none tracking-tight text-brand-700">DISMAT</span>
-                <span class="mt-1 block text-[10px] font-semibold uppercase tracking-wider text-slate-400">Depuis 2009 · Dakar</span>
+        <a href="{{ route('home') }}" class="flex items-center gap-3.5">
+            <img src="{{ asset('images/logo-dismat.png') }}" alt="DISMAT" class="h-9 w-auto sm:h-10">
+            <span class="hidden border-l border-slate-200 pl-3.5 text-[10px] font-semibold uppercase leading-tight tracking-wider text-slate-400 sm:block">
+                Depuis<br>2009 · Dakar
             </span>
         </a>
 
