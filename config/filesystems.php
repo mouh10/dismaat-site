@@ -38,7 +38,7 @@ return [
         // bord Laravel Cloud) et renvoie une erreur « NotImplemented » si Flysystem
         // tente de définir un ACL par fichier — ce qui empêchait tout upload de
         // fonctionner.
-        's3' => [
+        's3disk' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
