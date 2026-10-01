@@ -76,7 +76,7 @@ class ArticleResource extends Resource
                         ->label('Image de couverture')
                         ->image()
                         ->directory('articles')
-                        ->disk('public')
+                        ->disk(config('filesystems.default'))
                         ->imageEditor()
                         ->columnSpanFull(),
 
@@ -91,7 +91,7 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image')->label('')->disk('public')->square(),
+                ImageColumn::make('image')->label('')->disk(config('filesystems.default'))->square(),
                 TextColumn::make('title')->label('Titre')->searchable()->sortable(),
                 TextColumn::make('published_at')->label('Publié le')->date('d/m/Y')->sortable(),
                 IconColumn::make('is_published')->label('Publié')->boolean(),

@@ -138,6 +138,20 @@ Avant la mise en ligne :
 
 Après le déploiement, vérifiez que `https://votre-domaine/up` répond bien (code 200) : c'est le point de contrôle de santé à utiliser pour le monitoring automatique de votre hébergeur.
 
+## Stockage des images en production (important sur Laravel Cloud et hébergements similaires)
+
+Sur un serveur classique (VPS), les photos uploadées depuis `/admin` sont écrites sur le disque du serveur (`storage/app/public`) et y restent tant que vous ne les supprimez pas vous-même.
+
+**Sur Laravel Cloud (et toute plateforme au disque éphémère : Railway, Render, Heroku...), ce n'est pas le cas** : à chaque nouveau déploiement (chaque `git push`), l'application tourne sur une instance fraîche dont le disque local est réinitialisé. Tout fichier écrit localement pendant l'exécution — donc toute photo uploadée depuis l'admin — disparaît au déploiement suivant, d'où le besoin de les recharger à chaque fois.
+
+Le projet est déjà préparé pour ce cas : un disque de stockage **S3** (`config/filesystems.php`, disque `s3`) a été ajouté, et tous les uploads (produits, actualités) passent déjà par `config('filesystems.default')` plutôt que par un disque local codé en dur. Il ne reste qu'à activer un vrai stockage objet, persistant, côté hébergement :
+
+1. Dans le tableau de bord **Laravel Cloud**, ouvrez votre environnement et provisionnez/attachez une ressource **Object Storage**. Laravel Cloud configure alors automatiquement les variables d'environnement nécessaires (`FILESYSTEM_DISK=s3` et les identifiants `AWS_*`) pour cet environnement — vous n'avez rien à saisir vous-même.
+2. Redéployez (un nouveau `git push` suffit, ou un redéploiement manuel depuis le tableau de bord) : la dépendance `league/flysystem-aws-s3-v3`, déjà ajoutée à `composer.json`, sera installée automatiquement par `composer install`.
+3. **Rechargez les photos déjà présentes dans l'admin** (produits, actualités) : celles uploadées avant ce changement ont été perdues avec l'ancien disque éphémère et ne peuvent pas être récupérées automatiquement. Une fois rechargées sur le nouveau stockage S3, elles resteront définitivement, même après de futurs déploiements.
+
+Si vous déployez plutôt sur un VPS classique avec disque persistant, vous n'avez rien à faire : `FILESYSTEM_DISK=public` (déjà dans `.env.example`) continue d'utiliser le stockage local normalement.
+
 ## Structure du projet
 
 ```

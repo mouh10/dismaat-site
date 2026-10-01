@@ -23,6 +23,24 @@ return [
             'throw' => false,
         ],
 
+        // Stockage objet compatible S3 (utilisé en production sur les hébergements
+        // à disque éphémère, comme Laravel Cloud : les fichiers écrits sur le disque
+        // local du serveur ne survivent pas aux redéploiements ou à la mise à l'échelle,
+        // il faut donc un stockage externe persistant pour les photos uploadées depuis
+        // l'admin. Voir la section « Stockage des images en production » du README.
+        's3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
     ],
 
     'links' => [

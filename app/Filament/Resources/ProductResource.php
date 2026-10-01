@@ -97,7 +97,7 @@ class ProductResource extends Resource
                         ->label('Photo du produit')
                         ->image()
                         ->directory('products')
-                        ->disk('public')
+                        ->disk(config('filesystems.default'))
                         ->imageEditor()
                         ->columnSpanFull(),
 
@@ -122,7 +122,7 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('image')
                     ->label('')
-                    ->disk('public')
+                    ->disk(config('filesystems.default'))
                     ->square(),
                 TextColumn::make('name')
                     ->label('Nom')

@@ -45,7 +45,7 @@ class Article extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? Storage::disk('public')->url($this->image) : null;
+        return $this->image ? Storage::disk(config('filesystems.default'))->url($this->image) : null;
     }
 
     public function scopePublished($query)
