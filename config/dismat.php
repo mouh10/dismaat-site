@@ -13,6 +13,10 @@ return [
     'phone_href' => '+221338216771',
     'fax' => '+221 33 821 67 65',
     'email' => 'dismat@dismatsn.com',
+
+    // Adresse qui reçoit une notification email à chaque nouveau message de contact.
+    // Configurable via CONTACT_NOTIFY_EMAIL dans .env ; retombe sur l'email de l'entreprise si absent.
+    'contact_notify_email' => env('CONTACT_NOTIFY_EMAIL', 'dismat@dismatsn.com'),
     'rc' => 'SN-DK-2009-B-4966',
     'ninea' => '40248242B2',
     'bank' => [

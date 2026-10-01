@@ -6,6 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -21,8 +22,12 @@ Route::get('/actualites', [ArticleController::class, 'index'])->name('articles.i
 Route::get('/actualites/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 Route::get('/mentions-legales', function () {
     return view('legal.mentions');
 })->name('legal.mentions');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');

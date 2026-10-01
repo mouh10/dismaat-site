@@ -69,4 +69,34 @@ class PublicPagesTest extends TestCase
 
         $response->assertSessionHasErrors(['name', 'email', 'message']);
     }
+
+    public function test_sitemap_is_accessible_and_lists_pages(): void
+    {
+        $category = Category::factory()->create();
+        Product::factory()->create(['category_id' => $category->id, 'is_active' => true]);
+        Article::factory()->create(['is_published' => true, 'published_at' => now()->subDay()]);
+
+        $response = $this->get(route('sitemap'));
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'application/xml; charset=UTF-8');
+        $response->assertSee(route('home'), false);
+        $response->assertSee(route('products.index'), false);
+    }
+
+    public function test_responses_include_basic_security_headers(): void
+    {
+        $response = $this->get(route('home'));
+
+        $response->assertHeader('X-Content-Type-Options', 'nosniff');
+        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
+    }
+
+    public function test_unknown_url_returns_branded_404(): void
+    {
+        $response = $this->get('/cette-page-n-existe-pas');
+
+        $response->assertStatus(404);
+        $response->assertSee('Page introuvable');
+    }
 }

@@ -74,31 +74,31 @@
                         <div>
                             <label for="name" class="block text-sm font-semibold text-slate-700">Nom complet *</label>
                             <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                                   class="mt-1.5 w-full rounded-xl border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500 @error('name') border-red-400 @enderror">
+                                   class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 @error('name') border-red-400 @enderror">
                             @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-semibold text-slate-700">Email *</label>
                             <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                   class="mt-1.5 w-full rounded-xl border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500 @error('email') border-red-400 @enderror">
+                                   class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 @error('email') border-red-400 @enderror">
                             @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label for="phone" class="block text-sm font-semibold text-slate-700">Téléphone</label>
                             <input type="text" id="phone" name="phone" value="{{ old('phone') }}"
-                                   class="mt-1.5 w-full rounded-xl border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500">
+                                   class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                         </div>
                         <div>
                             <label for="subject" class="block text-sm font-semibold text-slate-700">Sujet</label>
                             <input type="text" id="subject" name="subject" value="{{ old('subject') }}"
-                                   class="mt-1.5 w-full rounded-xl border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500">
+                                   class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                         </div>
                     </div>
 
                     <div>
                         <label for="message" class="block text-sm font-semibold text-slate-700">Message *</label>
                         <textarea id="message" name="message" rows="5" required
-                                  class="mt-1.5 w-full rounded-xl border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500 @error('message') border-red-400 @enderror">{{ old('message') }}</textarea>
+                                  class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 @error('message') border-red-400 @enderror">{{ old('message') }}</textarea>
                         @error('message') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 

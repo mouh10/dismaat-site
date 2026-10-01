@@ -44,12 +44,17 @@ php artisan migrate --seed
 # 6. Créer le lien symbolique de stockage public (photos produits/actualités)
 php artisan storage:link
 
-# 7. Compiler les assets (CSS/JS)
+# 7. Publier les assets CSS/JS du back-office Filament
+#    (étape indispensable : sans elle, /admin s'affiche sans aucune mise en forme —
+#    police par défaut du navigateur, icônes énormes et non stylées, mise en page cassée)
+php artisan filament:assets
+
+# 8. Compiler les assets du site public (CSS/JS)
 npm run build
 # ou, en développement, dans un terminal séparé :
 npm run dev
 
-# 8. Lancer le serveur
+# 9. Lancer le serveur
 php artisan serve
 ```
 
@@ -58,6 +63,9 @@ Le site est ensuite accessible sur **http://localhost:8000**.
 ## Accès au back-office
 
 URL : **http://localhost:8000/admin**
+
+> **Le back-office s'affiche sans aucun style (police par défaut, icônes énormes, mise en page cassée) ?**
+> C'est presque toujours parce que `php artisan filament:assets` n'a pas été exécuté (cette commande publie les fichiers CSS/JS compilés de Filament dans `public/css/filament` et `public/js/filament` — ce n'est **pas** la même chose que `npm run build`, qui ne compile que les assets du site public). Lancez-la, puis `php artisan optimize:clear` pour vider les caches, et rechargez la page.
 
 Identifiants créés par le seeder de démonstration :
 
@@ -90,36 +98,64 @@ Les coordonnées affichées dans le pied de page, la page Contact et les mention
 
 ## Formulaire de contact
 
-Les messages envoyés depuis `/contact` sont enregistrés en base (table `contact_messages`) et consultables dans le back-office sous **Contenu > Messages de contact**. Le formulaire inclut un champ anti-spam (honeypot) invisible pour les utilisateurs humains.
+Les messages envoyés depuis `/contact` sont enregistrés en base (table `contact_messages`) et consultables dans le back-office sous **Contenu > Messages de contact**. Le formulaire inclut :
 
-Pour recevoir une notification par email à chaque nouveau message, il est possible d'ajouter un `Mail::to(...)` dans `App\Http\Controllers\ContactController::store()` une fois un service d'envoi d'email configuré dans `.env` (`MAIL_MAILER`, etc.).
+- un champ anti-spam (honeypot) invisible pour les utilisateurs humains ;
+- une limite de fréquence (5 envois par minute et par visiteur) pour empêcher le spam automatisé ;
+- une **notification par email** envoyée automatiquement à chaque nouveau message, à l'adresse définie par `CONTACT_NOTIFY_EMAIL` dans `.env` (par défaut l'email de l'entreprise). L'email est envoyé via `App\Mail\ContactMessageReceived` et permet de répondre directement au visiteur (Reply-To pré-rempli). Si l'envoi échoue (fournisseur mal configuré, panne…), le message reste quand même enregistré en base — seul l'email échoue, jamais la soumission du formulaire.
+
+Tant que `MAIL_MAILER=log` (valeur par défaut en local), les emails ne sont pas réellement envoyés : ils sont simplement écrits dans `storage/logs/laravel.log`. Configurez un vrai fournisseur (`MAIL_MAILER=smtp` + vos identifiants, ou un service comme Mailgun/Resend/Postmark) avant la mise en production pour que les notifications arrivent réellement par email.
+
+## Fonctionnalités techniques incluses
+
+- **`/sitemap.xml`** : plan du site généré dynamiquement (pages statiques + tous les produits actifs + tous les articles publiés), utile pour le référencement.
+- **`/robots.txt`** : autorise l'indexation du site public et bloque `/admin`.
+- **En-têtes de sécurité** (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`) appliqués automatiquement à toutes les réponses via `App\Http\Middleware\SecurityHeaders`.
+- **Pages d'erreur personnalisées** aux couleurs de DISMAT pour les erreurs 403, 404, 419, 429 et 500 (`resources/views/errors/`), autonomes (sans dépendance aux assets compilés ni à la base de données) pour rester fiables même en cas de panne.
+- **Tableau de bord admin** (`/admin`) avec un widget de statistiques en un coup d'œil : produits actifs, services actifs, articles publiés, messages non lus.
+- **Point de contrôle de santé** `/up` (fourni nativement par Laravel 11) à utiliser pour le monitoring/health check de votre hébergeur.
+- **Tests automatisés** (`tests/Feature/`) couvrant les pages publiques, le formulaire de contact (y compris l'envoi d'email et la limite de fréquence), le sitemap et les en-têtes de sécurité — lancez-les avec `php artisan test`.
 
 ## Déploiement en production
 
 Avant la mise en ligne :
 
-1. `APP_ENV=production` et `APP_DEBUG=false` dans `.env`.
-2. Générer une nouvelle `APP_KEY` dédiée à la production si ce n'est pas déjà fait.
-3. `composer install --optimize-autoloader --no-dev`
-4. `npm run build`
-5. `php artisan migrate --force` (sans `--seed`, sauf si vous voulez conserver les données de démo)
-6. `php artisan config:cache && php artisan route:cache && php artisan view:cache`
-7. Configurer un vrai fournisseur d'email (`MAIL_MAILER`) si vous activez les notifications par email.
-8. Changer le mot de passe administrateur par défaut.
-9. Pointer le serveur web (Nginx/Apache) vers le dossier `public/`.
+1. `APP_ENV=production` et `APP_DEBUG=false` dans `.env` — **indispensable** : `APP_DEBUG=true` en production expose des informations sensibles (chemins serveur, variables d'environnement) en cas d'erreur.
+2. `APP_URL` renseigné avec le vrai nom de domaine (ex. `https://www.dismatsn.com`) — utilisé pour générer les liens absolus (sitemap, emails).
+3. Générer une nouvelle `APP_KEY` dédiée à la production si ce n'est pas déjà fait (`php artisan key:generate --force`).
+4. `composer install --optimize-autoloader --no-dev`
+5. `npm install && npm run build`
+6. `php artisan migrate --force` (sans `--seed`, sauf si vous voulez conserver les données de démo le temps de remplir le vrai contenu)
+7. `php artisan storage:link` (si ce n'est pas déjà fait — nécessaire pour que les photos uploadées depuis l'admin s'affichent)
+8. `php artisan filament:assets` — **indispensable** : publie les CSS/JS compilés du back-office Filament dans `public/css/filament` et `public/js/filament`. Sans cette étape, `/admin` s'affiche sans aucune mise en forme (police par défaut, icônes énormes, mise en page cassée). C'est une commande distincte de `npm run build`, qui ne concerne que le site public.
+9. `php artisan config:cache && php artisan route:cache && php artisan view:cache` (à refaire après chaque modification de `.env` ou des routes/vues en production)
+10. Configurer un vrai fournisseur d'email (`MAIL_MAILER=smtp` + identifiants) pour que les notifications de contact partent réellement.
+11. **Changer le mot de passe administrateur par défaut** (ou créer un nouveau compte admin et supprimer `admin@dismatsn.com`).
+12. Pointer le serveur web (Nginx/Apache) vers le dossier `public/` (jamais la racine du projet).
+13. Activer HTTPS (Let's Encrypt via votre hébergeur, par exemple) — un certificat SSL est indispensable pour un site professionnel avec formulaire de contact.
+14. Une fois le nom de domaine final connu, ajoutez-le à `public/robots.txt` sous la forme `Sitemap: https://votre-domaine/sitemap.xml`.
+15. Soumettez `https://votre-domaine/sitemap.xml` à Google Search Console pour accélérer l'indexation.
+
+Après le déploiement, vérifiez que `https://votre-domaine/up` répond bien (code 200) : c'est le point de contrôle de santé à utiliser pour le monitoring automatique de votre hébergeur.
 
 ## Structure du projet
 
 ```
 app/
   Filament/Resources/   → back-office (CRUD catégories, produits, services, articles, messages)
-  Http/Controllers/     → contrôleurs du site public
+  Filament/Widgets/     → widget de statistiques du tableau de bord admin
+  Http/Controllers/     → contrôleurs du site public (+ SitemapController)
+  Http/Middleware/      → SecurityHeaders (en-têtes de sécurité appliqués à toutes les réponses)
+  Mail/                 → ContactMessageReceived (email de notification de contact)
   Models/                → Category, Product, Service, Article, ContactMessage, User
 config/dismat.php        → coordonnées et informations légales de l'entreprise
 database/migrations/     → schéma PostgreSQL
 database/seeders/        → contenu de démonstration
 resources/views/         → vues Blade du site public (Tailwind CSS)
-routes/web.php           → routes du site public
+resources/views/emails/  → gabarit de l'email de notification de contact
+resources/views/errors/  → pages d'erreur personnalisées (403, 404, 419, 429, 500)
+routes/web.php           → routes du site public (+ /sitemap.xml)
+tests/Feature/            → tests automatisés (pages publiques, contact, sitemap, sécurité)
 ```
 
 ## Note technique

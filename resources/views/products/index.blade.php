@@ -16,7 +16,7 @@
                     <label for="q" class="sr-only">Rechercher</label>
                     <div class="flex gap-2">
                         <input type="text" id="q" name="q" value="{{ $search }}" placeholder="Rechercher un produit..."
-                               class="w-full rounded-full border-slate-200 text-sm focus:border-brand-500 focus:ring-brand-500">
+                               class="w-full rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition-colors duration-150 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                         <button type="submit" class="btn-primary px-4">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
                         </button>

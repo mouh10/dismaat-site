@@ -30,7 +30,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('DISMAT — Administration')
             ->favicon(asset('favicon.ico'))
             ->colors([
-                'primary' => Color::hex('#2b62f5'),
+                'primary' => Color::hex('#13294B'),
+                'warning' => Color::hex('#C9A24A'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
